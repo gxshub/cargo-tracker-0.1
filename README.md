@@ -1,7 +1,7 @@
 # Cargo Tracker 0.1
 
 This sample Spring Boot project is used to illustrate the patterns of Domain-Driven Design.
-It is based on the source code<sup id="a1">[1](#f1)</sup> in
+It is based on the source code<sup id="a1">[1](#f1)</sup> for
 Chapter 5 of the book _Practical Domain-Driven Design in Enterprise Java_ with modification.
 
 #### All Bounded Contexts of Cargo Tracker
@@ -105,15 +105,15 @@ and `/tmp/kafka-streams` (if any). In Windows, delete the folders `C:\tmp\zookee
 `C:\tmp\kafka-logs` and `C:\kafka\kafka-streams` (if any).
 
 
-## Diving Into Event-Driven Architecture
+## Event-Driven Architecture
 
 <!-- ### Origin of `CargoBookedEvent` and `CargoRoutedEvent`-->
+### Events and Kafka Topics
 
 Two Kafka topics, `"cargobookings"` and `"cargoroutings"` are created by this application (i.e., by the **Booking Microservice**).
 Events [`CargoBookedEvent`](./bookingms/src/main/java/csci318/demo/cargotracker/shareddomain/events/CargoBookedEvent.java) and 
 [`CargoRoutedEvent`](./bookingms/src/main/java/csci318/demo/cargotracker/shareddomain/events/CargoRoutedEvent.java) are published to these
-two topic, respectively. The source code of the two events are included in the `sharedmain.events` package 
-(see TODO<sup id="a2">[2](#f2)</sup>).
+two topic, respectively. The source code of the two events are included in the `sharedmain.events` package.
 
 The two events are orignally created  by the domain class 
 [`Cargo`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/domain/model/aggregates/Cargo.java), by using the `AbstractAggregateRoot` generic class
@@ -121,7 +121,7 @@ The two events are orignally created  by the domain class
 The two events are listened to by the
 [`CargoEventPublisherService`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/application/internal/outboundservices/CargoEventPublisherService.java), 
 which publish the same events, but as external events, to the two Kafka topics.
-Currently the `"cargoroutings"` only is consumed by the **Tracking Microservice**.
+Only the `"cargoroutings"` tpoic is consumed by the **Tracking Microservice**. The consumption of `CargoRoutedEvent` events are not implemented currently (see TODO<sup id="a2">[2](#f2)</sup>).
 
 ### The Kafka Publisher API
 
