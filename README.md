@@ -1,8 +1,8 @@
 # Cargo Tracker 0.1
 
-This sample Spring Boot project is used to illustrate the patterns of Domain-Driven Design. 
+This sample Spring Boot project is used to illustrate the patterns of Domain-Driven Design.
 It is based on the source code<sup id="a1">[1](#f1)</sup> in
-Chapter 4 of the book _Practical Domain-Driven Design in Enterprise Java_ with modification.
+Chapter 5 of the book _Practical Domain-Driven Design in Enterprise Java_ with modification.
 
 #### All Bounded Contexts of Cargo Tracker
 <img src="fig1_cargo_tracker.png" alt="cargo tracker" style="width:750px">
@@ -12,23 +12,26 @@ Chapter 4 of the book _Practical Domain-Driven Design in Enterprise Java_ with m
 
 __Command classes in Booking__
 
-Commands are similar to domain events, but they explicitly model 
+Commands are similar to domain events, but they explicitly model
 what update is made to the system.
 They play an important role in the CQRS architecture.
 
 <img src="fig3_booking_bounded_context_commands.png" alt="booking domain service" style="width:750px">
 
-___TODO:___
-_The [Delivery.java](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/domain/model/valueobjects/Delivery.java) 
-class (value object) includes some business logic. Consider how to separate the logic in a separate 
+___CONSIDER:___
+_The [Delivery.java](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/domain/model/valueobjects/Delivery.java)
+class (value object) includes some business logic. Consider how to separate the logic in a separate
 Domain Service class_
+
+<a id="f1">1.</a>
+[https://github.com/practicalddd/practicaldddbook/tree/master/Chapter5](https://github.com/practicalddd/practicaldddbook/tree/master/Chapter5) [↩](#a1)
 
 ## Apache Kafka Setup
 This Spring Boot project uses Apache Kafka as a messaging platform.
 To run this project, you need to set up Kafka first.
 
 #### Linux and MacOS
-Download a **binary package** of Apache Kafka (e.g., `kafka_2.13-2.8.0.tgz`) from 
+Download a **binary package** of Apache Kafka (e.g., `kafka_2.13-2.8.0.tgz`) from
 [https://kafka.apache.org/downloads](https://kafka.apache.org/downloads)
 and upzip it.
 In the Terminal, `cd` to the unzip folder, and start Kakfa with the following commands (each in a separate Terminal session):
@@ -40,8 +43,8 @@ In the Terminal, `cd` to the unzip folder, and start Kakfa with the following co
 ```
 
 #### Windows
-Download a **binary package** of Apache Kafka (e.g., `kafka_2.13-2.8.0.tgz`) from 
-[https://kafka.apache.org/downloads](https://kafka.apache.org/downloads) 
+Download a **binary package** of Apache Kafka (e.g., `kafka_2.13-2.8.0.tgz`) from
+[https://kafka.apache.org/downloads](https://kafka.apache.org/downloads)
 and unzip it to a directory, e.g., `C:\kafka`&mdash;Windows does not like a complex path name (!).
 
 <!--
@@ -61,11 +64,15 @@ Book and check cargoes with the following command:
 (Linux/MacOS)
 ```shell
 curl -X POST -H "Content-Type:application/json" -d '{"bookingAmount":20,"originLocation":"HK","destLocation":"NY","destArrivalDeadline":"2010-08-01"}' http://localhost:8787/cargobooking
+```
+```shell
 curl -X GET -H "Content-Type:application/json" http://localhost:8787/cargobooking/findAllBookingIds
 ```
 (windows)
 ```shell
 curl -X POST -H "Content-Type:application/json" -d "{\"bookingAmount\":20,\"originLocation\":\"HK\",\"destLocation\":\"NY\",\"destArrivalDeadline\":\"2010-08-01\"}" http://localhost:8787/cargobooking
+```
+```shell
 curl -X GET -H "Content-Type:application/json" http://localhost:8787/cargobooking/findAllBookingIds
 ```
 
@@ -92,14 +99,124 @@ c:\kafka\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:909
 ```
 
 ### Trouble Shooting
-If you cannot start Kafka, try to clean up data in the Kafka topics to start over. 
-For this purpose, in Linux/MacOS, delete the folders `/tmp/zookeeper`, `/tmp/kafka-logs` 
-and `/tmp/kafka-streams` (if any). In Windows, delete the folders `C:\tmp\zookeeper`, 
+If you cannot start Kafka, try to clean up data in the Kafka topics to start over.
+For this purpose, in Linux/MacOS, delete the folders `/tmp/zookeeper`, `/tmp/kafka-logs`
+and `/tmp/kafka-streams` (if any). In Windows, delete the folders `C:\tmp\zookeeper`,
 `C:\tmp\kafka-logs` and `C:\kafka\kafka-streams` (if any).
 
+
+## Diving Into Event-Driven Architecture
+
+<!-- ### Origin of `CargoBookedEvent` and `CargoRoutedEvent`-->
+
+Two Kafka topics, `"cargobookings"` and `"cargoroutings"` are created by this application (i.e., by the **Booking Microservice**).
+Events [`CargoBookedEvent`](./bookingms/src/main/java/csci318/demo/cargotracker/shareddomain/events/CargoBookedEvent.java) and 
+[`CargoRoutedEvent`](./bookingms/src/main/java/csci318/demo/cargotracker/shareddomain/events/CargoRoutedEvent.java) are published to these
+two topic, respectively. The source code of the two events are included in the `sharedmain.events` package 
+(see TODO<sup id="a2">[2](#f2)</sup>).
+
+The two events are orignally created  by the domain class `Cargo`, by using the `AbstractAggregateRoot` generic class
+(see [REST Services with Spring V4](https://github.com/gxshub/rest-services-with-spring-v4))
+The two events are listened to by the `CargoEventPublisherService`, which publish the same events, but as external events, to the two Kafka topics.
+Currently the `"cargoroutings"` only is consumed by the **Tracking Microservice**.
+
+### The Kafka Publisher API
+
+To publish events to a kafka topic, the following three parts are included in the source code of **Booking Microservice**.
+
+A Kafka binder and two binding topics are defined in the file [`application.properties`](./bookingms/src/main/resources/application.properties):
+```properties
+spring.cloud.stream.kafka.binder.brokers=localhost:9092
+spring.cloud.stream.bindings.cargoBookingChannel.destination=cargobookings
+spring.cloud.stream.bindings.cargoRoutingChannel.destination=cargoroutings
+```
+The port `localhost:9092` runs the Kafka server. The two Kafka topics `"cargobookings"` and `"cargoroutings"`
+are bound to two channels used in the source code of the **Booking MS**.
+
+The two output message channels are declared in the interface [`CargoEventSource`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/infrastructure/brokers/CargoEventSource.java):
+```java
+public interface CargoEventSource {
+    
+    @Output("cargoBookingChannel")
+    MessageChannel cargoBooking();
+
+    @Output("cargoRoutingChannel")
+    MessageChannel cargoRouting();
+}
+```
+The [`CargoEventPublisherService`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/application/internal/outboundservices/CargoEventPublisherService.java) uses the two messages channels to publish events.
+```java
+@Service
+@EnableBinding(CargoEventSource.class)
+public class CargoEventPublisherService {
+
+    CargoEventSource cargoEventSource;
+
+    public CargoEventPublisherService(CargoEventSource cargoEventSource){
+        this.cargoEventSource = cargoEventSource;
+    }
+
+    @TransactionalEventListener
+    public void handleCargoBookedEvent(CargoBookedEvent cargoBookedEvent){
+        cargoEventSource.cargoBooking().send(MessageBuilder.withPayload(cargoBookedEvent).build());
+    }
+
+    @TransactionalEventListener
+    public void handleCargoRoutedEvent(CargoRoutedEvent cargoRoutedEvent){
+        cargoEventSource.cargoRouting().send(MessageBuilder.withPayload(cargoRoutedEvent).build());
+    }
+}
+```
+
+### The Kafka Consumer API
+
+Similarly, the consume events from a Kafka topic, the following three parts are included in the source code of **Tracking Microservice**.
+
+The Kafka binders are defined in the file [`application.properties`](./trackingms/src/main/resources/application.properties):
+```properties
+spring.cloud.stream.kafka.binder.brokers=localhost:9092
+spring.cloud.stream.bindings.cargoBookingChannel.destination=cargobookings
+spring.cloud.stream.bindings.cargoRoutingChannel.destination=cargoroutings
+```
+(Note. Only the topic `"cargobookings"` is used in the **Tracking MS**. The other one is shown
+here only for illustration.)
+
+Two input channels are declared in the interface [`CargoEventSource`](./trackingms/src/main/java/csci318/demo/cargotracker/trackingms/infrastructure/brokers/CargoEventSource.java):
+```java
+public interface CargoEventSource {
+
+    String BOOKING_INPUT = "cargoBookingChannel";
+    String ROUTING_INPUT = "cargoRoutingChannel";
+
+    @Input
+    SubscribableChannel cargoBookingChannel();
+
+    @Input
+    SubscribableChannel cargoRoutingChannel();
+}
+```
+(Note. Only the `"cargoBookingChannel"` channel is used here. The other one is shown
+here only for illustration.)
+
+The [`CargoRoutedEventHandler`](./trackingms/src/main/java/csci318/demo/cargotracker/trackingms/interfaces/events/CargoRoutedEventHandler.java)
+only consumes the `CargoBookedEvent ` events from the `"cargoBookingChannel"` channel:
+```java
+@Service
+@EnableBinding(CargoEventSource.class)
+public class CargoRoutedEventHandler {
+
+    @Autowired
+    private CargoEventSource cargoEventSource;
+
+    @StreamListener(CargoEventSource.BOOKING_INPUT)
+    public void receiveEvent(CargoBookedEvent cargoBookedEvent) {
+        System.out.println("****READING FROM KAFKA TOPIC cargobookings: "+
+                cargoBookedEvent.getCargoBookedEventData().getBookingId()+"****");
+    }
+}
+```
 ---
-<a id="f1">1.</a>
-[https://github.com/practicalddd/practicaldddbook/tree/master/Chapter5](https://github.com/practicalddd/practicaldddbook/tree/master/Chapter5) [↩](#a1)
+<a id="f2">***TODO:***</a> Implement a consumer in the **Routing Microservice** which consumes  events from the `"cargoroutings"` topic.
+[↩](#a2)
 
-
-
+***TODO.*** Consider how to enrich the events, e.g., what if "booking amount" information is required?
