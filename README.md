@@ -115,9 +115,12 @@ Events [`CargoBookedEvent`](./bookingms/src/main/java/csci318/demo/cargotracker/
 two topic, respectively. The source code of the two events are included in the `sharedmain.events` package 
 (see TODO<sup id="a2">[2](#f2)</sup>).
 
-The two events are orignally created  by the domain class `Cargo`, by using the `AbstractAggregateRoot` generic class
-(see [REST Services with Spring V4](https://github.com/gxshub/rest-services-with-spring-v4))
-The two events are listened to by the `CargoEventPublisherService`, which publish the same events, but as external events, to the two Kafka topics.
+The two events are orignally created  by the domain class 
+[`Cargo`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/domain/model/aggregates/Cargo.java), by using the `AbstractAggregateRoot` generic class
+(see [REST Services with Spring V4](https://github.com/gxshub/rest-services-with-spring-v4)).
+The two events are listened to by the
+[`CargoEventPublisherService`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/application/internal/outboundservices/CargoEventPublisherService.java), 
+which publish the same events, but as external events, to the two Kafka topics.
 Currently the `"cargoroutings"` only is consumed by the **Tracking Microservice**.
 
 ### The Kafka Publisher API
@@ -219,4 +222,4 @@ public class CargoRoutedEventHandler {
 <a id="f2">***TODO:***</a> Implement a consumer in the **Routing Microservice** which consumes  events from the `"cargoroutings"` topic.
 [↩](#a2)
 
-***TODO.*** Consider how to enrich the events, e.g., what if "booking amount" information is required?
+***TODO:*** Consider how to enrich the events, e.g., what if "booking amount" information is required?
