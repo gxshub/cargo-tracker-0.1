@@ -125,9 +125,9 @@ Currently the `"cargoroutings"` only is consumed by the **Tracking Microservice*
 
 ### The Kafka Publisher API
 
-To publish events to a kafka topic, the following three parts are included in the source code of **Booking Microservice**.
+The following _three_ parts in the source code of **Booking Microservice** relate to publishing events to Kafka topics.
 
-A Kafka binder and two binding topics are defined in the file [`application.properties`](./bookingms/src/main/resources/application.properties):
+(1) A Kafka binder and two binding topics are defined in the file [`application.properties`](./bookingms/src/main/resources/application.properties):
 ```properties
 spring.cloud.stream.kafka.binder.brokers=localhost:9092
 spring.cloud.stream.bindings.cargoBookingChannel.destination=cargobookings
@@ -136,7 +136,7 @@ spring.cloud.stream.bindings.cargoRoutingChannel.destination=cargoroutings
 The port `localhost:9092` runs the Kafka server. The two Kafka topics `"cargobookings"` and `"cargoroutings"`
 are bound to two channels used in the source code of the **Booking MS**.
 
-The two output message channels are declared in the interface [`CargoEventSource`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/infrastructure/brokers/CargoEventSource.java):
+(2) The two output message channels are declared in the interface [`CargoEventSource`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/infrastructure/brokers/CargoEventSource.java):
 ```java
 public interface CargoEventSource {
     
@@ -147,7 +147,7 @@ public interface CargoEventSource {
     MessageChannel cargoRouting();
 }
 ```
-The [`CargoEventPublisherService`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/application/internal/outboundservices/CargoEventPublisherService.java) uses the two messages channels to publish events.
+(3) The [`CargoEventPublisherService`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/application/internal/outboundservices/CargoEventPublisherService.java) uses the two messages channels to publish events.
 ```java
 @Service
 @EnableBinding(CargoEventSource.class)
@@ -173,9 +173,9 @@ public class CargoEventPublisherService {
 
 ### The Kafka Consumer API
 
-Similarly, the consume events from a Kafka topic, the following three parts are included in the source code of **Tracking Microservice**.
+Similarly, the following _three_ parts in the source code of **Tracking Microservice** relate to consuming events from Kafka topics.
 
-The Kafka binders are defined in the file [`application.properties`](./trackingms/src/main/resources/application.properties):
+(1) The Kafka binders are defined in the file [`application.properties`](./trackingms/src/main/resources/application.properties):
 ```properties
 spring.cloud.stream.kafka.binder.brokers=localhost:9092
 spring.cloud.stream.bindings.cargoBookingChannel.destination=cargobookings
@@ -184,7 +184,7 @@ spring.cloud.stream.bindings.cargoRoutingChannel.destination=cargoroutings
 (Note. Only the topic `"cargobookings"` is used in the **Tracking MS**. The other one is shown
 here only for illustration.)
 
-Two input channels are declared in the interface [`CargoEventSource`](./trackingms/src/main/java/csci318/demo/cargotracker/trackingms/infrastructure/brokers/CargoEventSource.java):
+(2) Two input channels are declared in the interface [`CargoEventSource`](./trackingms/src/main/java/csci318/demo/cargotracker/trackingms/infrastructure/brokers/CargoEventSource.java):
 ```java
 public interface CargoEventSource {
 
@@ -201,8 +201,8 @@ public interface CargoEventSource {
 (Note. Only the `"cargoBookingChannel"` channel is used here. The other one is shown
 here only for illustration.)
 
-The [`CargoRoutedEventHandler`](./trackingms/src/main/java/csci318/demo/cargotracker/trackingms/interfaces/events/CargoRoutedEventHandler.java)
-only consumes the `CargoBookedEvent ` events from the `"cargoBookingChannel"` channel:
+(3) The [`CargoRoutedEventHandler`](./trackingms/src/main/java/csci318/demo/cargotracker/trackingms/interfaces/events/CargoRoutedEventHandler.java)
+only consumes the `CargoBookedEvent` events from the `"cargoBookingChannel"` channel:
 ```java
 @Service
 @EnableBinding(CargoEventSource.class)
@@ -222,4 +222,4 @@ public class CargoRoutedEventHandler {
 <a id="f2">***TODO:***</a> Implement a consumer in the **Routing Microservice** which consumes  events from the `"cargoroutings"` topic.
 [↩](#a2)
 
-***TODO:*** Consider how to enrich the events, e.g., what if "booking amount" information is required?
+***TODO:*** Consider how to enrich the events, e.g., including "booking amount" information (as an attribute) in the `CargoRoutedEvent` class?
