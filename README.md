@@ -146,6 +146,9 @@ public interface CargoEventSource {
     MessageChannel cargoRouting();
 }
 ```
+_The strings `"cargoBookingChannel"` and `"cargoRoutingChannel"` are the binding channel names,
+which have been declared in the above `application.properties` file._
+
 (3) The [`CargoEventPublisherService`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/application/internal/outboundservices/CargoEventPublisherService.java) uses the two messages channels to publish events.
 ```java
 @Service
@@ -190,11 +193,12 @@ public interface CargoEventSource {
     String BOOKING_INPUT = "cargoBookingChannel";
     String ROUTING_INPUT = "cargoRoutingChannel";
 
-    @Input
-    SubscribableChannel cargoBookingChannel();
+    @Input(BOOKING_INPUT)
+    SubscribableChannel bookingChannel();
 
-    @Input
-    SubscribableChannel cargoRoutingChannel();
+    @Input(ROUTING_INPUT)
+    SubscribableChannel routingChannel();
+
 }
 ```
 (Note. Only the `"cargoBookingChannel"` channel is used here. The other one is shown

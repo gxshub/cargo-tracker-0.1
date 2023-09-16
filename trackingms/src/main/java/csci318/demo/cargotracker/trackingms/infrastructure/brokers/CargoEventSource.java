@@ -11,10 +11,10 @@ public interface CargoEventSource {
     String BOOKING_INPUT = "cargoBookingChannel";
     String ROUTING_INPUT = "cargoRoutingChannel";
 
-    @Input
-    SubscribableChannel cargoBookingChannel();
+    @Input(BOOKING_INPUT)
+    SubscribableChannel bookingChannel();
 
-    @Input
-    SubscribableChannel cargoRoutingChannel();
+    @Input(ROUTING_INPUT)
+    SubscribableChannel routingChannel();
 
 }
