@@ -1,30 +1,29 @@
 # Cargo Tracker 0.1
 
-This sample Spring Boot project is used to illustrate the patterns of Domain-Driven Design.
-It is based on the source code<sup id="a1">[1](#f1)</sup> for
-Chapter 5 of the book _Practical Domain-Driven Design in Enterprise Java_ with modification.
+This Spring Boot project<sup id="a1">[[1]](#f1)</sup> is used to illustrate the patterns of Domain-Driven Design and the Event-Driven Architecture. 
 
-#### All Bounded Contexts of Cargo Tracker
-<img src="fig1_cargo_tracker.png" alt="cargo tracker" style="width:750px">
 
-#### Booking Bounded Context - Domain Model
-<img src="fig2_booking_bounded_context_domain_model.png" alt="booking domain model" style="width:750px">
 
-__Command classes in Booking__
+**The Bounded Contexts of Cargo Tracker**
+
+<img src="fig1_cargo_tracker.png" alt="cargo tracker" style="width:500px">
+
+**The Booking Bounded Context - Domain Model**
+
+<img src="fig2_booking_bounded_context_domain_model.png" alt="booking domain model" style="width:500px">
+
+**Command classes in Booking**
 
 Commands are similar to domain events, but they explicitly model
 what update is made to the system.
 They play an important role in the CQRS architecture.
 
-<img src="fig3_booking_bounded_context_commands.png" alt="booking domain service" style="width:750px">
+<img src="fig3_booking_bounded_context_commands.png" alt="booking domain service" style="width:500px">
 
 ___CONSIDER:___
 _The [Delivery.java](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/domain/model/valueobjects/Delivery.java)
 class (value object) includes some business logic. Consider how to separate the logic in a separate
 Domain Service class_
-
-<a id="f1">1.</a>
-[https://github.com/practicalddd/practicaldddbook/tree/master/Chapter5](https://github.com/practicalddd/practicaldddbook/tree/master/Chapter5) [↩](#a1)
 
 ## Apache Kafka Setup
 This Spring Boot project uses Apache Kafka as a messaging platform.
@@ -113,7 +112,7 @@ and `/tmp/kafka-streams` (if any). In Windows, delete the folders `C:\tmp\zookee
 Two Kafka topics, `"cargobookings"` and `"cargoroutings"` are created by this application (i.e., by the **Booking Microservice**).
 Events [`CargoBookedEvent`](./bookingms/src/main/java/csci318/demo/cargotracker/shareddomain/events/CargoBookedEvent.java) and 
 [`CargoRoutedEvent`](./bookingms/src/main/java/csci318/demo/cargotracker/shareddomain/events/CargoRoutedEvent.java) are published to these
-two topic, respectively. The source code of the two events are included in the `sharedmain.events` package.
+two topic, respectively. The source code of the two events is in the `sharedmain.events` package.
 
 The two events are orignally created  by the domain class 
 [`Cargo`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/domain/model/aggregates/Cargo.java), by using the `AbstractAggregateRoot` generic class
@@ -121,7 +120,7 @@ The two events are orignally created  by the domain class
 The two events are listened to by the
 [`CargoEventPublisherService`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/application/internal/outboundservices/CargoEventPublisherService.java), 
 which publish the same events, but as external events, to the two Kafka topics.
-Only the `"cargoroutings"` tpoic is consumed by the **Tracking Microservice**. The consumption of `CargoRoutedEvent` events are not implemented currently (see TODO<sup id="a2">[2](#f2)</sup>).
+Only the `"cargoroutings"` tpoic is consumed by the **Tracking Microservice**. The consumption of `CargoRoutedEvent` events is not implemented currently (see TODO<sup id="a2">[2](#f2)</sup>).
 
 ### The Kafka Publisher API
 
@@ -223,3 +222,7 @@ public class CargoRoutedEventHandler {
 [↩](#a2)
 
 ***TODO:*** Consider how to enrich the events, e.g., including "booking amount" information (as an attribute) in the `CargoRoutedEvent` class?
+
+---
+<a id="f1">[1]</a> Note. The project is based on the source code for
+[Chapter 5](https://github.com/practicalddd/practicaldddbook/tree/master/Chapter5) of the book _Practical Domain-Driven Design in Enterprise Java_ with modification. The images are taken also from the book. [↩](#a1)
