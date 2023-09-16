@@ -214,10 +214,7 @@ only consumes the `CargoBookedEvent` events from the `"cargoBookingChannel"` cha
 @Service
 @EnableBinding(CargoEventSource.class)
 public class CargoRoutedEventHandler {
-
-    @Autowired
-    private CargoEventSource cargoEventSource;
-
+    
     @StreamListener(CargoEventSource.BOOKING_INPUT)
     public void receiveEvent(CargoBookedEvent cargoBookedEvent) {
         System.out.println("****READING FROM KAFKA TOPIC cargobookings: "+
