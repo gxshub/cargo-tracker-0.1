@@ -112,7 +112,7 @@ and `/tmp/kafka-streams` (if any). In Windows, delete the folders `C:\tmp\zookee
 Two Kafka topics, `"cargobookings"` and `"cargoroutings"` are created by this application (i.e., by the **Booking Microservice**).
 Events [`CargoBookedEvent`](./bookingms/src/main/java/csci318/demo/cargotracker/shareddomain/events/CargoBookedEvent.java) and 
 [`CargoRoutedEvent`](./bookingms/src/main/java/csci318/demo/cargotracker/shareddomain/events/CargoRoutedEvent.java) are published to these
-two topic, respectively. The source code of the two events is in the `sharedmain.events` package.
+two topics, respectively. The source code of the two events is in the `sharedmain.events` package.
 
 The two events are orignally created  by the domain class 
 [`Cargo`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/domain/model/aggregates/Cargo.java), by using the `AbstractAggregateRoot` generic class
@@ -122,20 +122,22 @@ The two events are listened to by the
 which publish the same events, but as external events, to the two Kafka topics.
 Only the `"cargoroutings"` tpoic is consumed by the **Tracking Microservice**. The consumption of `CargoRoutedEvent` events is not implemented currently (see TODO<sup id="a2">[2](#f2)</sup>).
 
-### The Kafka Publisher API
+### Kafka Publisher API in Booking Microservice
 
 The following _three_ parts in the source code of **Booking Microservice** relate to publishing events to Kafka topics.
 
-(1) A Kafka binder and two binding topics are defined in the file [`application.properties`](./bookingms/src/main/resources/application.properties):
+(1) A Kafka binder and two binding topics are defined in the file [`application.properties`](./bookingms/src/main/resources/application.properties)
+of Booking Microservice:
 ```properties
 spring.cloud.stream.kafka.binder.brokers=localhost:9092
 spring.cloud.stream.bindings.cargoBookingChannel.destination=cargobookings
 spring.cloud.stream.bindings.cargoRoutingChannel.destination=cargoroutings
 ```
 The port `localhost:9092` runs the Kafka server. The two Kafka topics `"cargobookings"` and `"cargoroutings"`
-are bound to two channels used in the source code of the **Booking MS**.
+are bound to two **binding channels** named `"gargoBookingChannel"` and `"cargoBoutingChannel"`.
 
-(2) The two output message channels are declared in the interface [`CargoEventSource`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/infrastructure/brokers/CargoEventSource.java):
+(2) The two (output) binding message channels are used in the interface [`CargoEventSource`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/infrastructure/brokers/CargoEventSource.java)
+of Booking Microservice:
 ```java
 public interface CargoEventSource {
     
@@ -146,8 +148,6 @@ public interface CargoEventSource {
     MessageChannel cargoRouting();
 }
 ```
-_The strings `"cargoBookingChannel"` and `"cargoRoutingChannel"` are the binding channel names,
-which have been declared in the above `application.properties` file._
 
 (3) The [`CargoEventPublisherService`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/application/internal/outboundservices/CargoEventPublisherService.java) uses the two messages channels to publish events.
 ```java
@@ -173,20 +173,24 @@ public class CargoEventPublisherService {
 }
 ```
 
-### The Kafka Consumer API
+### Kafka Consumer API in Routing Microservice
 
 Similarly, the following _three_ parts in the source code of **Tracking Microservice** relate to consuming events from Kafka topics.
 
-(1) The Kafka binders are defined in the file [`application.properties`](./trackingms/src/main/resources/application.properties):
+(1) The Kafka binders are defined in the file [`application.properties`](./trackingms/src/main/resources/application.properties)
+of Routing Microservice:
 ```properties
 spring.cloud.stream.kafka.binder.brokers=localhost:9092
 spring.cloud.stream.bindings.cargoBookingChannel.destination=cargobookings
 spring.cloud.stream.bindings.cargoRoutingChannel.destination=cargoroutings
 ```
-(Note. Only the topic `"cargobookings"` is used in the **Tracking MS**. The other one is shown
+The two topic names must be the same as those in the Booking Microservice, 
+but the two binding channel names are internal to the Routing Microservice.
+(Note. Only the topic `"cargobookings"` is used in the Routing Microservice. The other one is shown
 here only for illustration.)
 
-(2) Two input channels are declared in the interface [`CargoEventSource`](./trackingms/src/main/java/csci318/demo/cargotracker/trackingms/infrastructure/brokers/CargoEventSource.java):
+(2) Two input binding channels are declared in the interface [`CargoEventSource`](./trackingms/src/main/java/csci318/demo/cargotracker/trackingms/infrastructure/brokers/CargoEventSource.java)
+of Routing Microservice:
 ```java
 public interface CargoEventSource {
 
