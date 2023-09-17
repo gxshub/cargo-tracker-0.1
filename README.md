@@ -173,24 +173,24 @@ public class CargoEventPublisherService {
 }
 ```
 
-### Kafka Consumer API in Routing Microservice
+### Kafka Consumer API in Tracking Microservice
 
 Similarly, the following _three_ parts in the source code of **Tracking Microservice** relate to consuming events from Kafka topics.
 
 (1) The Kafka binders are defined in the file [`application.properties`](./trackingms/src/main/resources/application.properties)
-of Routing Microservice:
+of Tracking Microservice:
 ```properties
 spring.cloud.stream.kafka.binder.brokers=localhost:9092
 spring.cloud.stream.bindings.cargoBookingChannel.destination=cargobookings
 spring.cloud.stream.bindings.cargoRoutingChannel.destination=cargoroutings
 ```
 The two topic names must be the same as those in the Booking Microservice, 
-but the two binding channel names are internal to the Routing Microservice.
-(Note. Only the topic `"cargobookings"` is used in the Routing Microservice. The other one is shown
+but the two binding channel names are internal to the Tracking Microservice.
+(Note. Only the topic `"cargobookings"` is used in the Tracking Microservice. The other one is shown
 here only for illustration.)
 
 (2) Two input binding channels are declared in the interface [`CargoEventSource`](./trackingms/src/main/java/csci318/demo/cargotracker/trackingms/infrastructure/brokers/CargoEventSource.java)
-of Routing Microservice:
+of Tracking Microservice:
 ```java
 public interface CargoEventSource {
 
