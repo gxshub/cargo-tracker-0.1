@@ -149,7 +149,8 @@ public interface CargoEventSource {
 }
 ```
 
-(3) The [`CargoEventPublisherService`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/application/internal/outboundservices/CargoEventPublisherService.java) uses the two messages channels to publish events.
+(3) The [`CargoEventPublisherService`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/application/internal/outboundservices/CargoEventPublisherService.java) uses the two messages channels to publish events. 
+The `MessageBuilder` API is used to create messages that wrap the events.
 ```java
 @Service
 @EnableBinding(CargoEventSource.class)
