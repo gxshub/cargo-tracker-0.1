@@ -28,7 +28,7 @@ This Spring Boot project uses Apache Kafka as a messaging platform.
 To run this project, you need to set up Kafka first.
 
 #### Linux and MacOS
-Download a **binary package** of Apache Kafka (e.g., `kafka_2.13-2.8.0.tgz`) from 
+Download a **binary package** of Apache Kafka (e.g., `kafka_2.13-3.7.0.tgz`) from 
 [https://kafka.apache.org/downloads](https://kafka.apache.org/downloads)
 and upzip it.
 In the Terminal, `cd` to the unzip folder, and start Kakfa with the following commands (each in a separate Terminal session):
@@ -61,11 +61,15 @@ Book and check cargoes with the following command:
 (Linux/MacOS)
 ```shell
 curl -X POST -H "Content-Type:application/json" -d '{"bookingAmount":20,"originLocation":"HK","destLocation":"NY","destArrivalDeadline":"2010-08-01"}' http://localhost:8787/cargobooking
+```
+```shell
 curl -X GET -H "Content-Type:application/json" http://localhost:8787/cargobooking/findAllBookingIds
 ```
 (windows)
 ```shell
 curl -X POST -H "Content-Type:application/json" -d "{\"bookingAmount\":20,\"originLocation\":\"HK\",\"destLocation\":\"NY\",\"destArrivalDeadline\":\"2010-08-01\"}" http://localhost:8787/cargobooking
+```
+```shell
 curl -X GET -H "Content-Type:application/json" http://localhost:8787/cargobooking/findAllBookingIds
 ```
 
