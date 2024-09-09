@@ -1,4 +1,4 @@
-package csci318.demo.cargotracker.routingms.application.internal;
+package csci318.demo.cargotracker.routingms.application;
 
 import csci318.demo.cargotracker.shareddomain.TransitEdge;
 import csci318.demo.cargotracker.shareddomain.TransitPath;

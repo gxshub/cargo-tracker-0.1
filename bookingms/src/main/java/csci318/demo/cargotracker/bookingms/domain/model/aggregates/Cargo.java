@@ -52,10 +52,10 @@ public class Cargo extends AbstractAggregateRoot<Cargo> {
     public Cargo(BookCargoCommand bookCargoCommand){
         this.bookingId = new BookingId(bookCargoCommand.getBookingId());
         this.routeSpecification = new RouteSpecification(
-                    new Location(bookCargoCommand.getOriginLocation()),
-                    new Location(bookCargoCommand.getDestLocation()),
-                    bookCargoCommand.getDestArrivalDeadline()
-            );
+                new Location(bookCargoCommand.getOriginLocation()),
+                new Location(bookCargoCommand.getDestLocation()),
+                bookCargoCommand.getDestArrivalDeadline()
+        );
         this.origin = routeSpecification.getOrigin();
         this.itinerary = CargoItinerary.EMPTY_ITINERARY; //Empty Itinerary since the Cargo has not been routed yet
         this.bookingAmount = new BookingAmount(bookCargoCommand.getBookingAmount());
@@ -65,7 +65,10 @@ public class Cargo extends AbstractAggregateRoot<Cargo> {
         //Add this domain event which needs to be fired when the new cargo is saved
         addDomainEvent(new
                 CargoBookedEvent(
-                        new CargoBookedEventData(bookingId.getBookingId())));
+                new CargoBookedEventData(bookingId.getBookingId(),
+                        bookCargoCommand.getBookingAmount(),
+                        bookCargoCommand.getOriginLocation(),
+                        bookCargoCommand.getDestLocation())));
     }
 
     public BookingId getBookingId() {

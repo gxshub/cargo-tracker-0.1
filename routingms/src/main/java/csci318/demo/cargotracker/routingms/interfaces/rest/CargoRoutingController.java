@@ -1,7 +1,7 @@
 package csci318.demo.cargotracker.routingms.interfaces.rest;
 
 import csci318.demo.cargotracker.shareddomain.TransitPath;
-import csci318.demo.cargotracker.routingms.application.internal.CargoRoutingService;
+import csci318.demo.cargotracker.routingms.application.CargoRoutingService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
