@@ -100,11 +100,11 @@ The two events are orignally created  by the domain class
 [`Cargo`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/domain/model/aggregates/Cargo.java), by using the `AbstractAggregateRoot` generic class
 (see [REST Services with Spring V4](https://github.com/gxshub/rest-services-with-spring-v4)).
 The two events are listened to by the
-[`CargoEventPublisherService`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/application/internal/outboundservices/CargoEventPublisherService.java),
+[`CargoEventPublisherService`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/application/outboundservices/CargoEventPublisherService.java),
 which publish the same events, but as external events, to the two Kafka topics.
-Only the `"cargoroutings"` tpoic is consumed by the **Tracking Microservice**. The consumption of `CargoRoutedEvent` events is not implemented currently (see TODO<sup id="a2">[2](#f2)</sup>).
+But only the `"cargobookings"` topic is used in the demonstration.
 
-### Cloud Stream Binder ###
+### Binder in Spring Cloud Stream  ###
 
 <img src="fig3_kafka_binder.png" alt="cargo tracker" style="width:500px">
 
