@@ -187,7 +187,7 @@ is bound to `cargobookings`.
 (2) The [`CargoRoutedEventHandler`](./trackingms/src/main/java/csci318/demo/cargotracker/trackingms/interfaces/events/CargoRoutedEventHandler.java)
 includes the following code. 
 The `java.util.function.Consumer` API is used to consume events, where 
-`consume()` correspond to the function name in the above `application.properties` file.
+`consume()` corresponds to the function name in the above `application.properties` file.
 ```java
 @Service
 public class CargoRoutedEventHandler {
@@ -210,7 +210,7 @@ and a consumer in the **Routing Microservice** to consume events from this topic
 
 The Command and Query Responsibility Segregation (CQRS) architectural pattern is used in
 the application layer of BookingMS
-(c.f., the three corresponding packages in the
+(c.f., the corresponding packages in the
 [code](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/application)).
 
 Reference for CQRS: [https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs](https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs)
