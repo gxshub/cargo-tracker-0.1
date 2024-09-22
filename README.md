@@ -84,10 +84,10 @@ and `/tmp/kafka-streams` (if any). In Windows, delete the folders `C:\tmp\zookee
 
 ## Domain-Driven Design Patterns
 #### All Bounded Contexts of Cargo Tracker
-<img src="fig1_cargo_tracker.png" alt="cargo tracker" style="width:750px">
+<img src="assets/fig1_cargo_tracker.png" alt="cargo tracker" style="width:750px">
 
 #### Booking Bounded Context - Domain Model
-<img src="fig2_booking_bounded_context_domain_model.png" alt="booking domain model" style="width:750px">
+<img src="assets/fig2_booking_bounded_context_domain_model.png" alt="booking domain model" style="width:750px">
 
 __Command classes in Booking__
 
@@ -95,7 +95,7 @@ Commands are similar to domain events, but they explicitly model
 what update is made to the system.
 They play an important role in the CQRS architecture.
 
-<img src="fig3_booking_bounded_context_commands.png" alt="booking domain service" style="width:750px">
+<img src="assets/fig3_booking_bounded_context_commands.png" alt="booking domain service" style="width:750px">
 
 ___TODO:___
 _The [Delivery.java](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/domain/model/valueobjects/Delivery.java)
