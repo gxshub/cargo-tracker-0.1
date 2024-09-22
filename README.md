@@ -106,7 +106,7 @@ But only the `"cargobookings"` topic is used in the demonstration.
 
 ### Binder in Spring Cloud Stream  ###
 
-<img src="fig3_kafka_binder.png" alt="cargo tracker" style="width:500px">
+<img src="assets/fig4_kafka_binder.png" alt="cargo tracker" style="width:500px">
 
 (Picture taken from: [https://gorillalogic.com/blog/an-introduction-to-spring-cloud-streams](https://gorillalogic.com/blog/an-introduction-to-spring-cloud-streams))
 
@@ -122,8 +122,8 @@ spring.cloud.stream.kafka.binder.brokers=localhost:9092
 spring.cloud.stream.bindings.cargoBookingChannel.destination=cargobookings
 spring.cloud.stream.bindings.cargoRoutingChannel.destination=cargoroutings
 ```
-The port `localhost:9092` runs the Kafka server. The two Kafka topics `"cargobookings"` and `"cargoroutings"`
-are bound to two **binding channels** named `"gargoBookingChannel"` and `"cargoBoutingChannel"`.
+The Kafka server runs on `localhost:9092`. The two Kafka topics `"cargobookings"` and `"cargoroutings"`
+are bound to two **binding channels** named `"cgargoBookingChannel"` and `"cargoBoutingChannel"`.
 
 <!---
 (2) The two (output) binding message channels are used in the interface [`CargoEventSource`](./bookingms/src/main/java/csci318/demo/cargotracker/bookingms/infrastructure/brokers/CargoEventSource.java)
@@ -164,8 +164,8 @@ public class CargoEventPublisherService {
 }
 ```
 
-__Note__ the correspondence of binding names `"cargoBookingChannel"` and  `"cargoBookingChannel"`
-in `CargoEventPublisherService` and the above `application.properties` file.
+__Note__ the same of binding name (string) `"cargoBookingChannel"` is included in the Java class and 
+the above `application.properties` file.
 
 ### The Function API and Binding Configuration
 
@@ -175,19 +175,18 @@ The following _two_ parts in the source code of **Tracking Microservice** relate
 (1) The Kafka binders are defined in the file [`application.properties`](./trackingms/src/main/resources/application.properties)
 of Tracking Microservice:
 ```properties
+spring.cloud.stream.kafka.binder.brokers=localhost:9092
 spring.cloud.function.definition=consume
 spring.cloud.stream.bindings.consume-in-0.destination=cargobookings
-spring.cloud.stream.kafka.binder.brokers=localhost:9092
 ```
-The Kafka topic name `cargobookings` is also declared in the Booking MS.
-`consume` is the function name, which is used in the code (see below).
+The function named `consume` is defined and will be used in the Java code (see below).
 `consume-in-0` is the input argument (i.e. an event stream) for `consume` and 
-is bound to `cargobookings`. 
+is bound to the Kafka topic `cargobookings`. 
 
 (2) The [`CargoRoutedEventHandler`](./trackingms/src/main/java/csci318/demo/cargotracker/trackingms/interfaces/events/CargoRoutedEventHandler.java)
 includes the following code. 
 The `java.util.function.Consumer` API is used to consume events, where 
-`consume()` correspond to the function name in the above `application.properties` file.
+`consume()` correspond to the function defined in the above `application.properties` file.
 ```java
 @Service
 public class CargoRoutedEventHandler {
