@@ -49,20 +49,17 @@ public class CargoBookingCommandService {
 
     /**
      * Service Command method to assign a route to a Cargo
-     *
      * @param routeCargoCommand
      */
 
-    public void assignRouteToCargo(RouteCargoCommand routeCargoCommand) {
+    public void assignRouteToCargo(RouteCargoCommand routeCargoCommand){
+        System.out.println("Route Cargo command"+routeCargoCommand.getCargoBookingId());
+        Cargo cargo = cargoRepository.findByBookingId(
+                new BookingId(routeCargoCommand.getCargoBookingId()));
+        CargoItinerary cargoItinerary = externalCargoRoutingService
+                .fetchRouteForSpecification(cargo.getRouteSpecification());
 
-        Cargo cargo = cargoRepository.findByBookingId(new BookingId(routeCargoCommand.getCargoBookingId()));
-        CargoItinerary cargoItinerary = externalCargoRoutingService.fetchRouteForSpecification(new RouteSpecification(
-                new Location(routeCargoCommand.getOriginLocation()),
-                new Location(routeCargoCommand.getDestinationLocation()),
-                routeCargoCommand.getArrivalDeadline()
-        ));
-        routeCargoCommand.setCargoItinerary(cargoItinerary);
-        cargo.assignToRoute(routeCargoCommand);
+        cargo.assignToRoute(cargoItinerary);
         cargoRepository.save(cargo);
 
     }

@@ -105,21 +105,15 @@ public class Cargo extends AbstractAggregateRoot<Cargo> {
     /**
      * Command Handler for the Route Cargo Command. Sets the state of the Aggregate and registers the
      * Cargo routed event
-     * @param routeCargoCommand
+     * @param cargoItinerary
      */
 
-    public void assignToRoute(RouteCargoCommand routeCargoCommand) {
-        this.itinerary = routeCargoCommand.getCargoItinerary();
-        // Handling consistency within the Cargo aggregate synchronously
-        this.delivery = delivery.updateOnRouting(this.routeSpecification,
-                this.itinerary);
-
+    public void assignToRoute(CargoItinerary cargoItinerary) {
+        this.itinerary = cargoItinerary;
         //Add this domain event which needs to be fired when the new cargo is saved
         addDomainEvent(new
-                CargoRoutedEvent(
-                new CargoRoutedEventData(bookingId.getBookingId())));
+                CargoRoutedEvent(new CargoRoutedEventData(this.bookingId.getBookingId())));
     }
-
 
     /**
      *

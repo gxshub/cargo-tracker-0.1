@@ -34,6 +34,7 @@ public class ExternalCargoRoutingService {
         params.put("destination",routeSpecification.getDestination().getUnLocCode());
         params.put("arrivalDeadline",routeSpecification.getArrivalDeadline().toString());
 
+        //TODO
         TransitPath transitPath = restTemplate.getForObject("<<ROUTING_SERVICE_URL>>/cargorouting/",
                     TransitPath.class,params);
 

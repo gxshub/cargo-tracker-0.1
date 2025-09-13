@@ -16,6 +16,7 @@ public class CargoRoutedEventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(CargoRoutedEventHandler.class);
 
+    /* In practice, the event steam should be handled for tracking purposes. */
     @Bean
     public Consumer<CargoBookedEvent> consume() {
         return payload -> log.info(payload.toString());
