@@ -39,9 +39,9 @@ public class RoutingmsApplication {
 			CarrierMovement carrierMovement1 = new CarrierMovement(location1, location2, departureDate1, arrivalDate1);
 			CarrierMovement carrierMovement2 = new CarrierMovement(location2, location3, departureDate2, arrivalDate2);
 			CarrierMovement carrierMovement3 = new CarrierMovement(location3, location4, departureDate3, arrivalDate3);
-			Voyage voyage1 = new Voyage(new VoyageNumber("3"), new Schedule(List.of(carrierMovement1)));
-			Voyage voyage2 = new Voyage(new VoyageNumber("4"), new Schedule(List.of(carrierMovement2)));
-			Voyage voyage3 = new Voyage(new VoyageNumber("5"), new Schedule(List.of(carrierMovement3)));
+			Voyage voyage1 = new Voyage(new VoyageNumber("0100S"), new Schedule(List.of(carrierMovement1)));
+			Voyage voyage2 = new Voyage(new VoyageNumber("0101S"), new Schedule(List.of(carrierMovement2)));
+			Voyage voyage3 = new Voyage(new VoyageNumber("0102S"), new Schedule(List.of(carrierMovement3)));
 			voyageRepository.save(voyage1);
 			voyageRepository.save(voyage2);
 			voyageRepository.save(voyage3);
