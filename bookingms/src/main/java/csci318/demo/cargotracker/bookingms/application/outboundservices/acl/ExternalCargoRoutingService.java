@@ -5,8 +5,10 @@ import csci318.demo.cargotracker.bookingms.domain.model.valueobjects.Leg;
 import csci318.demo.cargotracker.bookingms.domain.model.valueobjects.RouteSpecification;
 import csci318.demo.cargotracker.shareddomain.TransitEdge;
 import csci318.demo.cargotracker.shareddomain.TransitPath;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,16 +31,17 @@ public class ExternalCargoRoutingService {
     public CargoItinerary fetchRouteForSpecification(RouteSpecification routeSpecification){
 
         RestTemplate restTemplate = new RestTemplate();
-        Map<String,Object> params = new HashMap<>();
-        params.put("origin",routeSpecification.getOrigin().getUnLocCode());
-        params.put("destination",routeSpecification.getDestination().getUnLocCode());
-        params.put("arrivalDeadline",routeSpecification.getArrivalDeadline().toString());
-
-        //TODO
-        TransitPath transitPath = restTemplate.getForObject("<<ROUTING_SERVICE_URL>>/cargorouting/",
-                    TransitPath.class,params);
-
-
+        String url = "http://localhost:8785/cargorouting/optimalRoute";
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("origin",
+                        routeSpecification.getOrigin().getUnLocCode())
+                .queryParam("destination",
+                        routeSpecification.getDestination().getUnLocCode())
+                         .queryParam("deadline",
+                routeSpecification.getArrivalDeadline().toString());
+        // The getForObject method is used to make a GET request to the routing service
+        TransitPath transitPath = restTemplate.getForObject(builder.toUriString(), TransitPath.class);
+        assert transitPath != null;
         List<Leg> legs = new ArrayList<>(transitPath.getTransitEdges().size());
         for (TransitEdge edge : transitPath.getTransitEdges()) {
             legs.add(toLeg(edge));

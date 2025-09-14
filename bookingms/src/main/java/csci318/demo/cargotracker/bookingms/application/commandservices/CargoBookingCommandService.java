@@ -22,9 +22,9 @@ public class CargoBookingCommandService {
 
 
     private final CargoRepository cargoRepository;
-    private ExternalCargoRoutingService externalCargoRoutingService;
+    private final ExternalCargoRoutingService externalCargoRoutingService;
 
-    public CargoBookingCommandService(CargoRepository cargoRepository) {
+    public CargoBookingCommandService(CargoRepository cargoRepository, ExternalCargoRoutingService externalCargoRoutingService) {
 
         this.cargoRepository = cargoRepository;
         this.externalCargoRoutingService = externalCargoRoutingService;
@@ -61,8 +61,5 @@ public class CargoBookingCommandService {
 
         cargo.assignToRoute(cargoItinerary);
         cargoRepository.save(cargo);
-
     }
-
-
 }

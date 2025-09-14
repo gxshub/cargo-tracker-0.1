@@ -1,9 +1,9 @@
 package csci318.demo.cargotracker.bookingms.domain.model.valueobjects;
 
 import csci318.demo.cargotracker.bookingms.domain.model.entities.Location;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+
 import java.util.Date;
 
 @Entity
@@ -29,8 +29,17 @@ public class Leg {
     @NotNull
     private Date unloadTime;
 
-    public Leg(String voyageNumber, String loadLocation, String unloadLocation, Date loadTime, Date unloadTime){
-
+    public Leg() {
     }
+
+    public Leg(String voyageNumber, String loadLocation,
+               String unloadLocation, Date loadTime, Date unloadTime) {
+        this.voyage = new Voyage(voyageNumber);
+        this.loadLocation = new Location(loadLocation);
+        this.unloadLocation = new Location(unloadLocation);
+        this.loadTime = loadTime;
+        this.unloadTime = unloadTime;
+    }
+
 
 }

@@ -3,20 +3,17 @@
 This Spring Boot project demonstration the patterns of Domain-Driven Design and 
 the Event-Driven Architecture based on Apache Kafka.
 
-This sample project is a part of the
+This sample project is taken from the
 [Chapter 5](https://github.com/practicalddd/practicaldddbook/tree/master/Chapter5) example in the book _Practical Domain-Driven Design in Enterprise Java_. 
-But unlike the original example, it is integrated with Apache Kafka.
-The following images are taken also from the book
+But unlike the original example, we use Apache Kafka of event streaming.
+The following images are taken also from the book.
 
 <!-- ## Domain-Driven Design Patterns-->
 ### Four Microservices in Cargo Tracker
-- Booking MS (cargo booking)
-- Routing MS (cargo routing)
-- Tracking MS (cargo tracking)
-- Handling MS (Cargo handling)
-
-The Booking MS is the most complete part. The other three microservices are largely incomplete 
-and presented here for conceptual illustration purposes only.   
+- **Booking MS** 
+- **Routing MS** 
+- **Tracking MS** 
+- **Handling MS** 
   
 <img src="assets/fig1_cargo_tracker.png" alt="cargo tracker" style="width:750px">
 
@@ -31,7 +28,7 @@ They play an important role in the CQRS architecture.
 
 <img src="assets/fig3_booking_bounded_context_commands.png" alt="booking domain service" style="width:750px">
 
-### Apache Kafka Setup
+## Apache Kafka Setup
 This Spring Boot project uses Apache Kafka as a messaging platform.
 To run this project, you need to set up Kafka first.
 
@@ -64,21 +61,60 @@ C:\kafka\bin\windows\zookeeper-server-start.bat C:\kafka\config\zookeeper.proper
 C:\kafka\bin\windows\kafka-server-start.bat C:\kafka\config\server.properties
 ```
 
-## Run Booking MS
+## Run The Application
 
-Book and check cargoes with the following command:
-(Linux/MacOS)
+Book a cargo:
 ```shell
-curl -X POST -H "Content-Type:application/json" -d '{"bookingAmount":20,"originLocation":"HK","destLocation":"NY","destArrivalDeadline":"2010-08-01"}' http://localhost:8787/cargobooking
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingAmount\":100,\"originLocation\":\"CNHKG\",\"destLocation\":\"USNYC\",\"destArrivalDeadline\":\"2019-09-28\"}" http://localhost:8787/cargobooking
 ```
+Check all booked cargoes:
 ```shell
 curl -X GET -H "Content-Type:application/json" http://localhost:8787/cargobooking/findAllBookingIds
 ```
-<!--
+Assign a route (replace `<<bookingId>>` with the returned book key):
 ```shell
-curl -X POST -H "Content-Type:application/json" -d '{"bookingId":"<<bookingId>>"}' http://localhost:8787/cargorouting
+bookingId="<<bookingId>>"
 ```
--->
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\"}" http://localhost:8787/cargorouting
+```
+Received at port:
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\",\"unLocode\":\"CNHKG\",\"handlingType\":\"RECEIVE\",\"completionTime\":\"2019-08-23\",\"voyageNumber\":\"\"}" http://localhost:8786/cargohandling
+```
+Loaded onto carrier:
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\",\"unLocode\":\"CNHKG\",\"handlingType\":\"LOAD\",\"completionTime\":\"2019-08-25\",\"voyageNumber\":\"0100S\"}" http://localhost:8786/cargohandling
+```
+Unloaded:
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\",\"unLocode\":\"CNHGH\",\"handlingType\":\"UNLOAD\",\"completionTime\":\"2019-08-28\",\"voyageNumber\":\"0100S\"}" http://localhost:8786/cargohandling
+```
+Loaded onto next carrier:
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\",\"unLocode\":\"CNHGH\",\"handlingType\":\"LOAD\",\"completionTime\":\"2019-09-01\",\"voyageNumber\":\"0101S\"}" http://localhost:8786/cargohandling
+```
+Unloaded:
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\",\"unLocode\":\"JNTKO\",\"handlingType\":\"UNLOAD\",\"completionTime\":\"2019-09-10\",\"voyageNumber\":\"0101S\"}" http://localhost:8786/cargohandling
+```
+Loaded onto next carrier:
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\",\"unLocode\":\"JNTKO\",\"handlingType\":\"LOAD\",\"completionTime\":\"2019-09-15\",\"voyageNumber\":\"0102S\"}" http://localhost:8786/cargohandling
+```
+Unloaded:
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\",\"unLocode\":\"USNYC\",\"handlingType\":\"UNLOAD\",\"completionTime\":\"2019-09-25\",\"voyageNumber\":\"0102S\"}" http://localhost:8786/cargohandling
+```
+Customs:
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\",\"unLocode\":\"USNYC\",\"handlingType\":\"CUSTOMS\",\"completionTime\":\"2019-09-26\",\"voyageNumber\":\"\"}" http://localhost:8786/cargohandling
+```
+Claimed:
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\",\"unLocode\":\"USNYC\",\"handlingType\":\"CLAIM\",\"completionTime\":\"2019-09-28\",\"voyageNumber\":\"\"}" http://localhost:8786/cargohandling
+```
+<!--
 (windows)
 ```shell
 curl -X POST -H "Content-Type:application/json" -d "{\"bookingAmount\":20,\"originLocation\":\"HK\",\"destLocation\":\"NY\",\"destArrivalDeadline\":\"2010-08-01\"}" http://localhost:8787/cargobooking
@@ -86,6 +122,7 @@ curl -X POST -H "Content-Type:application/json" -d "{\"bookingAmount\":20,\"orig
 ```shell
 curl -X GET -H "Content-Type:application/json" http://localhost:8787/cargobooking/findAllBookingIds
 ```
+-->
 
 
 #### View Booking Event Stream
@@ -99,7 +136,7 @@ After running the `bookingms`'s main class, check the Kafka topics with the foll
 ```shell
 C:\kafka\bin\windows\kafka-topics.bat --bootstrap-server=localhost:9092 --list
 ```
-You should see a topic named `cargobookings`. You can read data in the `cargobookings` topic:
+You should see three topics. You can read data in the `cargobookings` topic:
 
 (Linux/MacOS)
 ```shell

@@ -13,6 +13,7 @@
         <module>handlingms</module>
         <module>routingms</module>
         <module>trackingms</module>
+        <module>shareddomain</module>
     </modules>
 
     <properties>
