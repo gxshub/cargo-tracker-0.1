@@ -62,7 +62,7 @@ C:\kafka\bin\windows\kafka-server-start.bat C:\kafka\config\server.properties
 ```
 
 ## Run The Application
-
+### MacOS/Linux
 Book a cargo:
 ```shell
 curl -X POST -H "Content-Type:application/json" -d "{\"bookingAmount\":100,\"originLocation\":\"CNHKG\",\"destLocation\":\"USNYC\",\"destArrivalDeadline\":\"2019-09-28\"}" http://localhost:8787/cargobooking
@@ -114,6 +114,60 @@ Claimed:
 ```shell
 curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"$bookingId\",\"unLocode\":\"USNYC\",\"handlingType\":\"CLAIM\",\"completionTime\":\"2019-09-28\",\"voyageNumber\":\"\"}" http://localhost:8786/cargohandling
 ```
+
+### Windows CMD
+
+Book a cargo:
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingAmount\":100,\"originLocation\":\"CNHKG\",\"destLocation\":\"USNYC\",\"destArrivalDeadline\":\"2019-09-28\"}" http://localhost:8787/cargobooking
+```
+Check all booked cargoes:
+```shell
+curl -X GET -H "Content-Type:application/json" http://localhost:8787/cargobooking/findAllBookingIds
+```
+Assign a route (replace `<<bookingId>>` with the returned book key):
+```shell
+set bookingId=<<bookingId>>
+```
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"%bookingId%\"}" http://localhost:8787/cargorouting
+```
+Received at port:
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"%bookingId%\",\"unLocode\":\"CNHKG\",\"handlingType\":\"RECEIVE\",\"completionTime\":\"2019-08-23\",\"voyageNumber\":\"\"}" http://localhost:8786/cargohandling
+```
+Loaded onto carrier:
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"%bookingId%\",\"unLocode\":\"CNHKG\",\"handlingType\":\"LOAD\",\"completionTime\":\"2019-08-25\",\"voyageNumber\":\"0100S\"}" http://localhost:8786/cargohandling
+```
+Unloaded:
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"%bookingId%\",\"unLocode\":\"CNHGH\",\"handlingType\":\"UNLOAD\",\"completionTime\":\"2019-08-28\",\"voyageNumber\":\"0100S\"}" http://localhost:8786/cargohandling
+```
+Loaded onto next carrier:
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"%bookingId%\",\"unLocode\":\"CNHGH\",\"handlingType\":\"LOAD\",\"completionTime\":\"2019-09-01\",\"voyageNumber\":\"0101S\"}" http://localhost:8786/cargohandling
+```
+Unloaded:
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"%bookingId%\",\"unLocode\":\"JNTKO\",\"handlingType\":\"UNLOAD\",\"completionTime\":\"2019-09-10\",\"voyageNumber\":\"0101S\"}" http://localhost:8786/cargohandling
+```
+Loaded onto next carrier:
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"%bookingId%\",\"unLocode\":\"JNTKO\",\"handlingType\":\"LOAD\",\"completionTime\":\"2019-09-15\",\"voyageNumber\":\"0102S\"}" http://localhost:8786/cargohandling
+```
+Unloaded:
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"%bookingId%\",\"unLocode\":\"USNYC\",\"handlingType\":\"UNLOAD\",\"completionTime\":\"2019-09-25\",\"voyageNumber\":\"0102S\"}" http://localhost:8786/cargohandling
+```
+Customs:
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"%bookingId%\",\"unLocode\":\"USNYC\",\"handlingType\":\"CUSTOMS\",\"completionTime\":\"2019-09-26\",\"voyageNumber\":\"\"}" http://localhost:8786/cargohandling
+```
+Claimed:
+```shell
+curl -X POST -H "Content-Type:application/json" -d "{\"bookingId\":\"%bookingId%\",\"unLocode\":\"USNYC\",\"handlingType\":\"CLAIM\",\"completionTime\":\"2019-09-28\",\"voyageNumber\":\"\"}" http://localhost:8786/cargohandling
+```
 <!--
 (windows)
 ```shell
@@ -125,7 +179,7 @@ curl -X GET -H "Content-Type:application/json" http://localhost:8787/cargobookin
 -->
 
 
-#### View Booking Event Stream
+### View Booking Event Stream
 After running the `bookingms`'s main class, check the Kafka topics with the following command:
 
 (Linux/MacOS)
@@ -146,6 +200,7 @@ You should see three topics. You can read data in the `cargobookings` topic:
 ```shell
 c:\kafka\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic cargobookings --from-beginning
 ```
+
 
 ### Trouble Shooting
 If you cannot start Kafka, try to clean up data in the Kafka topics to start over. 
