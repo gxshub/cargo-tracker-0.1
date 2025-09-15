@@ -1,10 +1,10 @@
 package csci318.demo.cargotracker.trackingms.application;
 
-import csci318.demo.cargotracker.trackingms.domail.model.aggregates.TrackingActivity;
-import csci318.demo.cargotracker.trackingms.domail.model.aggregates.TrackingNumber;
-import csci318.demo.cargotracker.trackingms.domail.model.commands.AddTrackingEventCommand;
-import csci318.demo.cargotracker.trackingms.domail.model.commands.AssignTrackingNumberCommand;
-import csci318.demo.cargotracker.trackingms.domail.model.entities.BookingId;
+import csci318.demo.cargotracker.trackingms.domain.model.aggregates.TrackingActivity;
+import csci318.demo.cargotracker.trackingms.domain.model.aggregates.TrackingNumber;
+import csci318.demo.cargotracker.trackingms.domain.model.commands.AddTrackingEventCommand;
+import csci318.demo.cargotracker.trackingms.domain.model.commands.AssignTrackingNumberCommand;
+import csci318.demo.cargotracker.trackingms.domain.model.entities.BookingId;
 import csci318.demo.cargotracker.trackingms.infrastructure.repositories.TrackingRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;

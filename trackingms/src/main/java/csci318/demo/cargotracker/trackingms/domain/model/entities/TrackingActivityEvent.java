@@ -1,7 +1,7 @@
-package csci318.demo.cargotracker.trackingms.domail.model.entities;
+package csci318.demo.cargotracker.trackingms.domain.model.entities;
 
 
-import csci318.demo.cargotracker.trackingms.domail.model.valueobjects.TrackingEvent;
+import csci318.demo.cargotracker.trackingms.domain.model.valueobjects.TrackingEvent;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;

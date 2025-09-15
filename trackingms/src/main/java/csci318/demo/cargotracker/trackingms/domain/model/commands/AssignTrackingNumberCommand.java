@@ -1,4 +1,4 @@
-package csci318.demo.cargotracker.trackingms.domail.model.commands;
+package csci318.demo.cargotracker.trackingms.domain.model.commands;
 
 
 /**

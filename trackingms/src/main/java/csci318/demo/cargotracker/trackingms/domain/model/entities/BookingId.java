@@ -1,4 +1,4 @@
-package csci318.demo.cargotracker.trackingms.domail.model.entities;
+package csci318.demo.cargotracker.trackingms.domain.model.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

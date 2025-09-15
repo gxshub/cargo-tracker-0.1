@@ -2,7 +2,7 @@ package csci318.demo.cargotracker.trackingms.interfaces.events.transform;
 
 import csci318.demo.cargotracker.shareddomain.events.CargoHandledEvent;
 import csci318.demo.cargotracker.shareddomain.events.CargoHandledEventData;
-import csci318.demo.cargotracker.trackingms.domail.model.commands.AddTrackingEventCommand;
+import csci318.demo.cargotracker.trackingms.domain.model.commands.AddTrackingEventCommand;
 
 /**
  * Assembler class to convert the Cargo Routed Event to the Assign Tracking Number Command Model

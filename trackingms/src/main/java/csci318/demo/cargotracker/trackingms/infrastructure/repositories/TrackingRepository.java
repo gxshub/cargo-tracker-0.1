@@ -1,8 +1,8 @@
 package csci318.demo.cargotracker.trackingms.infrastructure.repositories;
 
-import csci318.demo.cargotracker.trackingms.domail.model.aggregates.TrackingActivity;
-import csci318.demo.cargotracker.trackingms.domail.model.aggregates.TrackingNumber;
-import csci318.demo.cargotracker.trackingms.domail.model.entities.BookingId;
+import csci318.demo.cargotracker.trackingms.domain.model.aggregates.TrackingActivity;
+import csci318.demo.cargotracker.trackingms.domain.model.aggregates.TrackingNumber;
+import csci318.demo.cargotracker.trackingms.domain.model.entities.BookingId;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

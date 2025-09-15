@@ -1,16 +1,16 @@
-package csci318.demo.cargotracker.trackingms.domail.model.aggregates;
+package csci318.demo.cargotracker.trackingms.domain.model.aggregates;
 
 
-import csci318.demo.cargotracker.trackingms.domail.model.commands.AddTrackingEventCommand;
-import csci318.demo.cargotracker.trackingms.domail.model.commands.AssignTrackingNumberCommand;
-import csci318.demo.cargotracker.trackingms.domail.model.entities.BookingId;
-import csci318.demo.cargotracker.trackingms.domail.model.entities.TrackingActivityEvent;
-import csci318.demo.cargotracker.trackingms.domail.model.valueobjects.TrackingEvent;
-import csci318.demo.cargotracker.trackingms.domail.model.valueobjects.TrackingEventType;
-import csci318.demo.cargotracker.trackingms.domail.model.valueobjects.TrackingLocation;
-import csci318.demo.cargotracker.trackingms.domail.model.valueobjects.TrackingVoyageNumber;
+import csci318.demo.cargotracker.trackingms.domain.model.commands.AddTrackingEventCommand;
+import csci318.demo.cargotracker.trackingms.domain.model.commands.AssignTrackingNumberCommand;
+import csci318.demo.cargotracker.trackingms.domain.model.entities.BookingId;
+import csci318.demo.cargotracker.trackingms.domain.model.entities.TrackingActivityEvent;
+import csci318.demo.cargotracker.trackingms.domain.model.valueobjects.TrackingEvent;
+import csci318.demo.cargotracker.trackingms.domain.model.valueobjects.TrackingEventType;
+import csci318.demo.cargotracker.trackingms.domain.model.valueobjects.TrackingLocation;
+import csci318.demo.cargotracker.trackingms.domain.model.valueobjects.TrackingVoyageNumber;
 import jakarta.persistence.*;
-import java.util.Date;
+
 import java.util.UUID;
 
 
